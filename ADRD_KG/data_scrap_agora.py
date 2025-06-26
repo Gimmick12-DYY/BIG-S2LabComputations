@@ -5,7 +5,7 @@ import time
 
 
 driver = webdriver.Chrome()
-driver.get("https://nda.nih.gov/general-query.html?q=query=collections%20~and~%20orderBy=id%20~and~%20orderDirection=Ascending")
+driver.get("https://agora.adknowledgeportal.org/genes/comparison")
 time.sleep(60) # Wait for content to load, and give me time to change to the correct webpage as the script jumps to the wrong page for some reason
 
 last_height = driver.execute_script("return document.body.scrollHeight")
