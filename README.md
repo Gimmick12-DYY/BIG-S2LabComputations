@@ -16,15 +16,11 @@ This repository contains two main components developed within the BIG-S2 Lab at 
 └── README.md
 ```
 
-## Usage
+## ADRD_KG
+This project utilized the help of LLM models and the Selenium package to wrap open-source datasets.
 
-Clone the repository:
-
-```bash
-git clone https://github.com/Gimmick12-DYY/BIG-S2LabComputations.git
-```
-
-Navigate into either subfolder to explore its purpose. For ANTs, ensure ANTs is installed and configured. For ADRD_KG, Jupyter and standard data science Python packages are required.
+## ANTs_pipeline
+This directory contains only the helper shell scripts used to facilitate the lab pipeline.
 
 ## License
 
