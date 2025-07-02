@@ -26,6 +26,7 @@ used in the following full-text article.  Return **valid JSON** with keys:
 - Preprocessing_Tools
 - Analysis_Tools
 - Key_Findings
+- Top_Cited_Papers
 
 Text:
 <<FULLTEXT>>
