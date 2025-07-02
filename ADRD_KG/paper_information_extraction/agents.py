@@ -18,7 +18,7 @@ class Agent():
     def __init__(self, model = "o3-mini", async_mode=True):
         # Load API keys from JSON file
         api_key_file = "api_keys.json"  # Update this with your file path
-        api_key = self.load_api_keys(api_key_file)["SaraQ"]
+        api_key = self.load_api_keys(api_key_file)["YuyangD"]
         
         # Set OpenAI API key
         self.model = model
