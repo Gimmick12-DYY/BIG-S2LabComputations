@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Set target file and directory
-TARGET_FILE="$TARGET_DIR/ANTs_batAll.sh"
-TARGET_DIR="/work/users/d/y/dyy12/WORK/code"
+TARGET_DIR="/work/users/d/y/dyy12/WORK_TBSS/code"
+TARGET_FILE="$TARGET_DIR/FDT_batAll.sh"
 
 # Check if file exists
 if [[ ! -f "$TARGET_FILE" ]]; then
@@ -11,11 +11,11 @@ if [[ ! -f "$TARGET_FILE" ]]; then
 fi
 
 # Count total number of qsub lines (ignore the shebang)
-TOTAL_LINES=$(grep "^qsub" "$TARGET_FILE" | wc -l)
+TOTAL_LINES=$(grep "^sbatch" "$TARGET_FILE" | wc -l)
 
 # If 1000 or fewer sbatch lines, no need to split
 if [[ "$TOTAL_LINES" -le 1000 ]]; then
-  echo "No need to split. Total qsub lines: $TOTAL_LINES"
+  echo "No need to split. Total sbatch lines: $TOTAL_LINES"
   exit 0
 fi
 
@@ -25,7 +25,7 @@ COUNT=1
 
 # Create temporary chunks directly from grep output
 mkdir -p "$TARGET_DIR"
-grep "^qsub" "$TARGET_FILE" | split -l $CHUNK_SIZE -d - "$TARGET_DIR/FDT_chunk_"
+grep "^sbatch" "$TARGET_FILE" | split -l $CHUNK_SIZE -d - "$TARGET_DIR/FDT_chunk_"
 
 # Create output scripts with proper shebang
 for chunk in "$TARGET_DIR"/FDT_chunk_*; do
