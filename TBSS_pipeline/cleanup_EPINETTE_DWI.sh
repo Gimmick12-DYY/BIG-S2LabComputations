@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# For TBSS pipeline, this script checks for the presence of DWI files and organizes them into subject-specific directories.
+# Not so useful for TBSS, but included for consistency with the ANTs pipeline.
+
 # Define the base directory
 base_dir="/work/users/d/y/dyy12/WORK_TBSS/DWI"
 
