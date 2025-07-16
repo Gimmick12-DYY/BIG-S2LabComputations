@@ -12,6 +12,7 @@ This repository contains the projects developed within the BIG-S2 Lab at UNC Gil
 .
 ├── ADRD_KG/           # Notebooks and scripts for knowledge graph generation
 ├── ANTs_pipeline/     # Shell scripts wrapping ANTs preprocessing routines
+├── TBSS_pipeline/     # Shell scripts wrapping TBSS pipeline processing
 ├── LICENSE
 └── README.md
 ```
