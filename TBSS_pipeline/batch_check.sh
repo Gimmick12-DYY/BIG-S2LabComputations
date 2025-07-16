@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# For TBSS pipeline, this script checks for the presence of DWI files and organizes them into subject-specific directories.
+
 # Set target file and directory
 TARGET_DIR="/work/users/d/y/dyy12/WORK_TBSS/code"
 TARGET_FILE="$TARGET_DIR/FDT_batAll.sh"
