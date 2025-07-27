@@ -1,1 +1,1 @@
-module purge
+module purge # Clear all loaded modules
