@@ -8,7 +8,7 @@ import glob
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Function to read all .xpt files in a directory
+# Function to read all .xpt files in the data directory
 def read_xpt_files(directory):
     xpt_files = glob.glob(os.path.join(directory, '*.xpt'))
     dataframes = {}
