@@ -1,9 +1,5 @@
 # This script is used to read all .xpt files in a directory and plot basic analytics
-# It is used to check the data structure and the missing values
-# It is used to check the data distribution and the outliers
-# It is used to check the data correlation and the data relationship
-# It is used to check the data missing values and the data distribution
-# It is used to check the data correlation and the data relationship
+# Specific data files are only available in the remote desktop environment
 
 import numpy as np
 import pandas as pd
