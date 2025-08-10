@@ -1,7 +1,7 @@
 # This script is used to read all .xpt files in a directory and plot basic analytics
 # Specific data files are only available in the remote desktop environment
 
-import numpy as np
+import numpy as np # Most pacakges are not installed in the local environment, R may be the better language to use.
 import pandas as pd
 import os
 import glob
