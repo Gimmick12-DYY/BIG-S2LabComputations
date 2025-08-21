@@ -12,9 +12,10 @@ This repository contains the projects developed within the BIG-S2 Lab at UNC Gil
 
 ```
 .
-├── ADRD_KG/           # Notebooks and scripts for knowledge graph generation
-├── ANTs_pipeline/     # Shell scripts wrapping ANTs preprocessing routines
-├── TBSS_pipeline/     # Shell scripts wrapping TBSS pipeline processing
+├── ADRD_KG/ # ADRD knowledge-graph + data wrapping utilities
+├── ANTs_pipeline/ # Shell helpers around ANTs for structural MRI
+├── TBSS_pipeline/ # Shell helpers to coordinate FSL TBSS
+├── YODA_Project/ # Data org + processing templates for YODA datasets
 ├── LICENSE
 └── README.md
 ```
@@ -23,8 +24,20 @@ This repository contains the projects developed within the BIG-S2 Lab at UNC Gil
 This project utilized the help of LLM models and the Selenium package to wrap open-source datasets.
 
 ## ANTs_pipeline
-This directory contains only the helper shell scripts used to facilitate the lab pipeline.
+This directory contains only the helper shell scripts used to facilitate the lab ANTs pipeline.
+
+## TBSS_pipeline
+This directory contains only the helper shell scripts used to facilitate the lab TBSS pipeline.
+
+## YODA
+This directory contains only the scripts used to facilitate lab research on the YODA project.
+
+## Prerequisites
+- **General**: `git`, Python ≥ 3.10, `conda` or `venv`.
+- **ANTs pipeline**: [ANTs](http://stnava.github.io/ANTs/) installed and on `PATH`; SLURM if submitting to HPC.
+- **TBSS pipeline**: [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/TBSS) installed and configured; SLURM if using the cluster.
+- **ADRD_KG**: Python + common data/automation libs (see `requirements.txt` or notebooks inside).
+- **YODA_Project**: Python; access to YODA data (per project policy).
 
 ## License
-
 This repository is licensed under the MIT License.
