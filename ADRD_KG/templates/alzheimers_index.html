@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alzheimer's Disease Research Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --ad-blue: #2c5aa0;
+            --ad-light-blue: #4a90e2;
+            --ad-orange: #f39c12;
+            --ad-red: #e74c3c;
+            --ad-green: #27ae60;
+            --ad-purple: #8e44ad;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--ad-blue) 0%, var(--ad-purple) 100%);
+            color: white;
+            padding: 80px 0;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid var(--ad-blue);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--ad-blue);
+            margin-bottom: 20px;
+        }
+
+        .upload-area {
+            border: 3px dashed var(--ad-blue);
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 30px 0;
+        }
+
+        .upload-area:hover {
+            border-color: var(--ad-orange);
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.02);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--ad-green);
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--ad-blue) 0%, var(--ad-light-blue) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .biomarker-card {
+            background: linear-gradient(135deg, var(--ad-orange) 0%, #f1c40f 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        .visualization-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .ad-specific-badge {
+            background: var(--ad-red);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .progress-bar-custom {
+            background: linear-gradient(90deg, var(--ad-green) 0%, var(--ad-orange) 50%, var(--ad-red) 100%);
+        }
+
+        .matrix-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .matrix-image:hover {
+            transform: scale(1.05);
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--ad-blue);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-tabs .nav-link {
+            border-radius: 10px 10px 0 0;
+            margin-right: 5px;
+            border: none;
+            background: #f8f9fa;
+            color: var(--ad-blue);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--ad-blue);
+            color: white;
+        }
+
+        .alert-custom {
+            border-radius: 10px;
+            border: none;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-brain text-primary"></i> AD Research Platform
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#upload">Upload Data</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#analytics">Analytics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#datasets">Datasets</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#research">Research Tools</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold animate__animated animate__fadeInDown">
+                <i class="fas fa-brain"></i> Alzheimer's Disease Research Platform
+            </h1>
+            <p class="lead animate__animated animate__fadeInUp animate__delay-1s">
+                Comprehensive data management, analysis, and visualization for Alzheimer's disease research
+            </p>
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <div class="feature-card animate__animated animate__fadeInLeft">
+                        <i class="fas fa-database feature-icon"></i>
+                        <h4>Dataset Management</h4>
+                        <p>Upload, organize, and manage your AD datasets with advanced metadata tracking</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card animate__animated animate__fadeInUp">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h4>Advanced Analytics</h4>
+                        <p>Biomarker analysis, progression modeling, and statistical analysis tools</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card animate__animated animate__fadeInRight">
+                        <i class="fas fa-users feature-icon"></i>
+                        <h4>Collaboration</h4>
+                        <p>Share datasets, collaborate on research, and publish findings</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top: 100px;">
+        <!-- Upload Section -->
+        <section id="upload">
+            <div class="row">
+                <div class="col-12">
+                    <div class="visualization-container">
+                        <h2 class="text-center mb-4">
+                            <i class="fas fa-upload text-primary"></i> Upload Alzheimer's Disease Data
+                        </h2>
+                        
+                        <!-- File Upload Area -->
+                        <div class="upload-area" id="uploadArea">
+                            <i class="fas fa-cloud-upload-alt fa-4x text-primary mb-4"></i>
+                            <h3>Drag & Drop your AD dataset here</h3>
+                            <p class="text-muted mb-4">Supports Excel, CSV, and JSON formats</p>
+                            <input type="file" id="fileInput" class="d-none" accept=".xlsx,.xls,.csv,.json">
+                            <button class="btn btn-primary btn-lg" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-folder-open"></i> Choose File
+                            </button>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <button class="btn btn-success w-100 btn-lg" id="generateSampleBtn">
+                                    <i class="fas fa-database"></i> Generate AD Sample Data
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="/download_template" class="btn btn-info w-100 btn-lg">
+                                    <i class="fas fa-download"></i> Download AD Template
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-warning w-100 btn-lg" onclick="showDataFormat()">
+                                    <i class="fas fa-info-circle"></i> Data Format Guide
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Loading and Messages -->
+                        <div class="loading text-center mt-4" id="loadingDiv" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            <p class="mt-3">Processing your AD dataset...</p>
+                        </div>
+
+                        <div class="alert alert-danger alert-custom mt-3" id="errorMessage" style="display: none;"></div>
+                        <div class="alert alert-success alert-custom mt-3" id="successMessage" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <div id="resultsSection" style="display: none;">
+            <!-- Dataset Summary -->
+            <section id="summary">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="text-center mb-4">
+                            <i class="fas fa-chart-bar text-primary"></i> Dataset Summary
+                        </h2>
+                        <div class="row" id="summaryStats">
+                            <!-- Summary statistics will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AD-Specific Analytics -->
+            <section id="adAnalytics">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="text-center mb-4">
+                            <i class="fas fa-brain text-primary"></i> Alzheimer's Disease Analytics
+                        </h2>
+                        
+                        <!-- Navigation Tabs -->
+                        <ul class="nav nav-tabs" id="adTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="biomarkers-tab" data-bs-toggle="tab" data-bs-target="#biomarkers" type="button">
+                                    <i class="fas fa-flask"></i> Biomarkers
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="cognitive-tab" data-bs-toggle="tab" data-bs-target="#cognitive" type="button">
+                                    <i class="fas fa-brain"></i> Cognitive Tests
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="genetics-tab" data-bs-toggle="tab" data-bs-target="#genetics" type="button">
+                                    <i class="fas fa-dna"></i> Genetics
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="progression-tab" data-bs-toggle="tab" data-bs-target="#progression" type="button">
+                                    <i class="fas fa-chart-line"></i> Progression
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="adTabContent">
+                            <!-- Biomarkers Tab -->
+                            <div class="tab-pane fade show active" id="biomarkers" role="tabpanel">
+                                <div class="row" id="biomarkerAnalysis">
+                                    <!-- Biomarker analysis will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- Cognitive Tests Tab -->
+                            <div class="tab-pane fade" id="cognitive" role="tabpanel">
+                                <div class="row" id="cognitiveAnalysis">
+                                    <!-- Cognitive analysis will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- Genetics Tab -->
+                            <div class="tab-pane fade" id="genetics" role="tabpanel">
+                                <div class="row" id="geneticAnalysis">
+                                    <!-- Genetic analysis will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- Progression Tab -->
+                            <div class="tab-pane fade" id="progression" role="tabpanel">
+                                <div class="row" id="progressionAnalysis">
+                                    <!-- Progression analysis will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Visualizations -->
+            <section id="visualizations">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="text-center mb-4">
+                            <i class="fas fa-chart-area text-primary"></i> AD-Specific Visualizations
+                        </h2>
+                        <div id="adVisualizations">
+                            <!-- AD visualizations will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Matrix Analysis -->
+            <section id="matrices">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="text-center mb-4">
+                            <i class="fas fa-th text-primary"></i> Cross-Tabulation Matrices
+                        </h2>
+                        <div id="matrixVisualizations">
+                            <!-- Matrix visualizations will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Data Format Modal -->
+    <div class="modal fade" id="dataFormatModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-info-circle text-primary"></i> AD Data Format Guide
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Required Columns for AD Analysis:</h6>
+                    <ul>
+                        <li><strong>Patient_ID</strong>: Unique patient identifier</li>
+                        <li><strong>Age</strong>: Patient age in years</li>
+                        <li><strong>Gender</strong>: Male/Female</li>
+                        <li><strong>MMSE_Score</strong>: Mini-Mental State Examination (0-30)</li>
+                        <li><strong>CDR_Score</strong>: Clinical Dementia Rating (0, 0.5, 1, 2, 3)</li>
+                        <li><strong>Clinical_Diagnosis</strong>: CN (Cognitively Normal), MCI, AD</li>
+                    </ul>
+                    <h6>Optional Biomarker Columns:</h6>
+                    <ul>
+                        <li><strong>CSF_ABeta42</strong>: CSF Aβ42 levels (pg/mL)</li>
+                        <li><strong>CSF_Total_Tau</strong>: CSF total tau levels (pg/mL)</li>
+                        <li><strong>CSF_Phospho_Tau</strong>: CSF p-tau levels (pg/mL)</li>
+                        <li><strong>APOE_Genotype</strong>: APOE genotype (ε2/ε3, ε3/ε3, etc.)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Enhanced JavaScript for AD-specific features
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const loadingDiv = document.getElementById('loadingDiv');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const resultsSection = document.getElementById('resultsSection');
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileUpload(e.target.files[0]);
+            }
+        });
+
+        // Generate AD sample data button
+        document.getElementById('generateSampleBtn').addEventListener('click', () => {
+            processData('/sample_data');
+        });
+
+        function handleFileUpload(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            processData('/upload', formData);
+        }
+
+        function processData(url, formData = null) {
+            showLoading();
+            hideMessages();
+
+            const requestOptions = {
+                method: formData ? 'POST' : 'GET',
+                body: formData
+            };
+
+            fetch(url, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        showSuccess(`Successfully processed ${data.filename}`);
+                        displayADResults(data);
+                    } else {
+                        showError(data.error || 'An error occurred while processing the file');
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    showError('Network error: ' + error.message);
+                });
+        }
+
+        function displayADResults(data) {
+            // Show results section
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Display summary statistics
+            displaySummaryStats(data.summary);
+
+            // Display AD-specific analytics
+            displayBiomarkerAnalysis(data.biomarker_analysis);
+            displayCognitiveAnalysis(data.summary);
+            displayGeneticAnalysis(data.summary);
+            displayProgressionAnalysis(data.summary);
+
+            // Display AD visualizations
+            displayADVisualizations(data.ad_visualizations);
+
+            // Display matrix visualizations
+            displayMatrixVisualizations(data.matrices);
+        }
+
+        function displaySummaryStats(summary) {
+            const summaryHtml = `
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h2>${summary.total_records}</h2>
+                        <p><i class="fas fa-users"></i> Total Patients</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h2>${summary.total_columns}</h2>
+                        <p><i class="fas fa-columns"></i> Data Columns</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h2>${summary.mmse_stats ? summary.mmse_stats.mean : 'N/A'}</h2>
+                        <p><i class="fas fa-brain"></i> Avg MMSE Score</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h2>${summary.apoe4_carriers || 'N/A'}</h2>
+                        <p><i class="fas fa-dna"></i> APOE4 Carriers</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('summaryStats').innerHTML = summaryHtml;
+        }
+
+        function displayBiomarkerAnalysis(biomarkerData) {
+            if (!biomarkerData) {
+                document.getElementById('biomarkerAnalysis').innerHTML = '<p class="text-muted">No biomarker data available</p>';
+                return;
+            }
+
+            let html = '';
+            
+            if (biomarkerData.CSF_ABeta42) {
+                html += `
+                    <div class="col-md-6">
+                        <div class="biomarker-card">
+                            <h5><i class="fas fa-flask"></i> CSF Aβ42</h5>
+                            <p><strong>Mean:</strong> ${biomarkerData.CSF_ABeta42.mean.toFixed(1)} pg/mL</p>
+                            <p><strong>Below 192 pg/mL:</strong> ${biomarkerData.CSF_ABeta42.cutoff_192} patients</p>
+                            <p><strong>Below 500 pg/mL:</strong> ${biomarkerData.CSF_ABeta42.cutoff_500} patients</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (biomarkerData.CSF_Total_Tau) {
+                html += `
+                    <div class="col-md-6">
+                        <div class="biomarker-card">
+                            <h5><i class="fas fa-flask"></i> CSF Total Tau</h5>
+                            <p><strong>Mean:</strong> ${biomarkerData.CSF_Total_Tau.mean.toFixed(1)} pg/mL</p>
+                            <p><strong>Above 375 pg/mL:</strong> ${biomarkerData.CSF_Total_Tau.cutoff_375} patients</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('biomarkerAnalysis').innerHTML = html;
+        }
+
+        function displayCognitiveAnalysis(summary) {
+            if (!summary.mmse_stats) {
+                document.getElementById('cognitiveAnalysis').innerHTML = '<p class="text-muted">No cognitive test data available</p>';
+                return;
+            }
+
+            const mmse = summary.mmse_stats;
+            const total = mmse.normal_count + mmse.mild_dementia_count + mmse.moderate_dementia_count + mmse.severe_dementia_count;
+            
+            const html = `
+                <div class="col-12">
+                    <h5><i class="fas fa-brain"></i> MMSE Score Distribution</h5>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <h3>${mmse.normal_count}</h3>
+                                <p>Normal (≥24)</p>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" style="width: ${(mmse.normal_count/total*100).toFixed(1)}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <h3>${mmse.mild_dementia_count}</h3>
+                                <p>Mild (18-23)</p>
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" style="width: ${(mmse.mild_dementia_count/total*100).toFixed(1)}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <h3>${mmse.moderate_dementia_count}</h3>
+                                <p>Moderate (12-17)</p>
+                                <div class="progress">
+                                    <div class="progress-bar bg-danger" style="width: ${(mmse.moderate_dementia_count/total*100).toFixed(1)}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <h3>${mmse.severe_dementia_count}</h3>
+                                <p>Severe (<12)</p>
+                                <div class="progress">
+                                    <div class="progress-bar bg-dark" style="width: ${(mmse.severe_dementia_count/total*100).toFixed(1)}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('cognitiveAnalysis').innerHTML = html;
+        }
+
+        function displayGeneticAnalysis(summary) {
+            if (!summary.apoe_distribution) {
+                document.getElementById('geneticAnalysis').innerHTML = '<p class="text-muted">No genetic data available</p>';
+                return;
+            }
+
+            let html = `
+                <div class="col-12">
+                    <h5><i class="fas fa-dna"></i> APOE Genotype Distribution</h5>
+                    <div class="row">
+            `;
+
+            for (const [genotype, count] of Object.entries(summary.apoe_distribution)) {
+                const isAPOE4 = genotype.includes('ε4');
+                const cardClass = isAPOE4 ? 'bg-danger' : 'bg-primary';
+                html += `
+                    <div class="col-md-4 mb-3">
+                        <div class="stats-card ${cardClass}">
+                            <h4>${count}</h4>
+                            <p>${genotype} ${isAPOE4 ? '<span class="badge bg-warning">APOE4</span>' : ''}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>APOE4 Carriers:</strong> ${summary.apoe4_carriers} patients (${(summary.apoe4_carriers/summary.total_records*100).toFixed(1)}%)
+                    </div>
+                </div>
+            `;
+            document.getElementById('geneticAnalysis').innerHTML = html;
+        }
+
+        function displayProgressionAnalysis(summary) {
+            if (!summary.cdr_distribution) {
+                document.getElementById('progressionAnalysis').innerHTML = '<p class="text-muted">No progression data available</p>';
+                return;
+            }
+
+            const cdrLabels = {
+                '0': 'Normal',
+                '0.5': 'Questionable',
+                '1': 'Mild',
+                '2': 'Moderate',
+                '3': 'Severe'
+            };
+
+            let html = `
+                <div class="col-12">
+                    <h5><i class="fas fa-chart-line"></i> Disease Progression (CDR Scores)</h5>
+                    <div class="row">
+            `;
+
+            for (const [score, count] of Object.entries(summary.cdr_distribution)) {
+                const colors = ['bg-success', 'bg-warning', 'bg-orange', 'bg-danger', 'bg-dark'];
+                const colorIndex = parseInt(score * 2);
+                html += `
+                    <div class="col-md-2 mb-3">
+                        <div class="stats-card ${colors[colorIndex] || 'bg-secondary'}">
+                            <h4>${count}</h4>
+                            <p>CDR ${score}<br><small>${cdrLabels[score]}</small></p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `</div></div>`;
+            document.getElementById('progressionAnalysis').innerHTML = html;
+        }
+
+        function displayADVisualizations(adPlots) {
+            if (!adPlots || Object.keys(adPlots).length === 0) {
+                document.getElementById('adVisualizations').innerHTML = '<p class="text-muted">No AD-specific visualizations available</p>';
+                return;
+            }
+
+            let html = '';
+            const plotTitles = {
+                'mmse_distribution': 'MMSE Score Distribution',
+                'cdr_distribution': 'CDR Score Distribution',
+                'biomarker_scatter': 'CSF Biomarkers: Aβ42 vs Total Tau',
+                'stage_age_boxplot': 'Age Distribution by Disease Stage'
+            };
+
+            for (const [plotName, plotData] of Object.entries(adPlots)) {
+                html += `
+                    <div class="col-md-6 mb-4">
+                        <div class="visualization-container">
+                            <h5><i class="fas fa-chart-area"></i> ${plotTitles[plotName] || plotName.replace(/_/g, ' ').toUpperCase()}</h5>
+                            <img src="data:image/png;base64,${plotData}" class="matrix-image" alt="${plotName}">
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('adVisualizations').innerHTML = `<div class="row">${html}</div>`;
+        }
+
+        function displayMatrixVisualizations(matrices) {
+            if (!matrices || Object.keys(matrices).length === 0) {
+                document.getElementById('matrixVisualizations').innerHTML = '<p class="text-muted">No matrix data available</p>';
+                return;
+            }
+
+            let html = '';
+            for (const [matrixName, matrixData] of Object.entries(matrices)) {
+                html += `
+                    <div class="col-12 mb-4">
+                        <div class="visualization-container">
+                            <h5><i class="fas fa-th"></i> ${matrixName.replace(/_/g, ' ').toUpperCase()}</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            ${Object.keys(matrixData).map(key => `<th>${key}</th>`).join('')}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${Object.entries(matrixData).map(([rowKey, rowData]) => 
+                                            `<tr>
+                                                <td><strong>${rowKey}</strong></td>
+                                                ${Object.values(rowData).map(value => `<td>${value}</td>`).join('')}
+                                            </tr>`
+                                        ).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('matrixVisualizations').innerHTML = `<div class="row">${html}</div>`;
+        }
+
+        function showDataFormat() {
+            const modal = new bootstrap.Modal(document.getElementById('dataFormatModal'));
+            modal.show();
+        }
+
+        function showLoading() {
+            loadingDiv.style.display = 'block';
+        }
+
+        function hideLoading() {
+            loadingDiv.style.display = 'none';
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
