@@ -3,8 +3,6 @@ ADRD Metadata Analysis Platform - Web Application
 
 This Flask application provides analysis and visualization of ADRD metadata
 using the local ADRD_Metadata_YuyangD.xlsx dataset.
-
-Author: Generated for BIG-S2LabComputations
 """
 
 from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for, flash, session
