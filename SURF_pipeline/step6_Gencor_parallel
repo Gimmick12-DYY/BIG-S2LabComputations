@@ -1,0 +1,46 @@
+clear 
+home0='/work/users/d/y/dyy12//BIG-S2/WORK_UKB-Shape/UKBSurf/'; % change to your PATH
+Patt='data'; % change to your data folder
+FWHM=10;%0 or 10
+datadir=sprintf('%s/%s/',home0,Patt);
+code_dir = fullfile(home0,'code');
+system(sprintf('mkdir %s',code_dir));
+system(sprintf('rm %s/*',code_dir)); 
+sub0=dir(datadir);sub0={sub0.name}';sub0=sub0(3:end);
+l=length(sub0);
+fid0=fopen(sprintf('%s/All.sh',code_dir),'w'); 
+fprintf(fid0,'#!/bin/bash \n');
+nn=length(sub0);%
+N=3;
+K=ceil(nn/N);
+for kk=1:K 
+	batNames = sprintf('%s/bat%i.pbs',code_dir,kk);
+	fid11 = fopen(batNames,'w');
+	fprintf(fid11,'#!/bin/bash \n');
+	fprintf(fid11,'#SBATCH --ntasks=1 \n');
+	fprintf(fid11,'#SBATCH --time=00:29:59 \n');%N=20 for 2 hours
+	fprintf(fid11,'#SBATCH --mem=12000 \n');
+	fprintf(fid11,'#SBATCH --wrap=job_%i \n',kk);
+	fprintf(fid11,'module load matlab/2021a;export MATLABPATH=%s/;cd %s \n',home0,datadir);
+	flag=0;
+    for i=min(kk*N,nn)+((kk-1)*N+1)-(((kk-1)*N+1):min(kk*N,nn))
+		if exist(sprintf('%s/%s/rfMRI/restfMRI_d360_fullcorr_v1.txt',datadir,sub0{i}))
+			if exist(sprintf('%s/%s/rfMRI/restfMRI_d360_NodeAmplitudes_v1.txt',datadir,sub0{i}))
+				if exist(sprintf('%s/%s/rfMRI/restfMRI_d360_partialcorr_v1.txt',datadir,sub0{i}))
+					continue;
+				end 
+			end
+		end
+		fprintf(fid11,'matlab -nojvm -nodesktop -nosplash -nodisplay -r "gencor(''%s'',''%s'',''%s'',''%i'')" -logfile "%s/%s_out" \n', Patt,home0,sub0{i},FWHM,code_dir,sub0{i});
+		flag=1;
+	end
+    fclose(fid11);
+    if flag==1
+        fprintf(fid0,'sbatch bat%i.pbs\n',kk);
+    end
+	if flag==0
+		system(sprintf('rm -r -f %s',batNames));
+	end
+end; 
+fclose(fid0); 
+clear all; 
